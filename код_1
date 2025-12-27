@@ -1,0 +1,58 @@
+# ЗАДАНИЕ №1
+
+with open('20_1.txt', 'r') as f:
+    n = int(f.readline())
+    log = f.readline().strip()
+
+# строю дерево
+adj = [[] for _ in range(n)]
+stack = [0]
+curr, nxt = 0, 1
+
+for c in log:
+    if c == '0':
+        adj[curr].append(nxt)
+        adj[nxt].append(curr)
+        stack.append(curr)
+        curr = nxt
+        nxt += 1
+    else:
+        curr = stack.pop()
+
+
+# BFS функция
+def bfs(s):
+    dist = [-1] * n
+    dist[s] = 0
+    q = [s]
+    pos = 0
+    last = s
+
+    while pos < len(q):
+        u = q[pos]
+        pos += 1
+        last = u
+
+        for v in adj[u]:
+            if dist[v] == -1:
+                dist[v] = dist[u] + 1
+                q.append(v)
+
+    return last, dist
+
+
+# нахожу диаметр
+u, _ = bfs(0)
+v, du = bfs(u)
+dia = 0
+for d in du:
+    if d > dia:
+        dia = d
+
+# нахожу центр и радиус
+if dia % 2 == 0:
+    cnt, rad = 1, dia // 2
+else:
+    cnt, rad = 2, dia // 2 + 1
+print('ЗАДАНИЕ №1')
+print (f'Центр = {cnt}, радиус = {rad}, диаметр = {dia}')
